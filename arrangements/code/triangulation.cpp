@@ -575,12 +575,15 @@ inline void splitSingleEdge(const TriangleSoup &ts, FastTrimesh &subm, uint v0_i
 
 inline void addConstraintSegmentsInSingleTriangle(TriangleSoup &ts, point_arena& arena, FastTrimesh &subm, AuxiliaryStructure &g, auxvector<UIPair> &segment_list, tbb::spin_mutex& mutex)
 {
+    constexpr int MaxIter = 500;
+
     int orientation = subm.triOrientation(0);
+    int iter = 0;
 
     phmap::flat_hash_map< UIPair, UIPair > sub_segs_map;
     sub_segs_map.reserve(segment_list.size());
 
-    while(segment_list.size() > 0)
+    while(segment_list.size() > 0 && iter++ < MaxIter)
     {
         UIPair seg = segment_list.back();
         segment_list.pop_back();
@@ -589,6 +592,11 @@ inline void addConstraintSegmentsInSingleTriangle(TriangleSoup &ts, point_arena&
         uint v1_id = subm.vertNewID(seg.second);
 
         addConstraintSegment(ts, arena, subm, v0_id, v1_id, orientation, g, segment_list, sub_segs_map, mutex);
+    }
+
+    if (MaxIter < iter)
+    {
+        throw std::runtime_error("WARNING: an infinite loop is suspected.");
     }
 }
 

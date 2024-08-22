@@ -540,9 +540,9 @@ inline void findRayEndpoints(const FastTrimesh &tm, const phmap::flat_hash_set<u
         }
     }
 
-    std::cout << "WARNING: the arrangement contains a fully implicit patch that requires exact rationals for evaluation. This version of the code does not support rationals, therefore the output result may contain open boundaries." << std::endl;
-
-    std::exit(EXIT_FAILURE);
+    //std::exit(EXIT_FAILURE);
+    throw std::runtime_error("WARNING: the arrangement contains a fully implicit patch that requires exact rationals for evaluation. \
+This version of the code does not support rationals, therefore the output result may contain open boundaries.");
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
